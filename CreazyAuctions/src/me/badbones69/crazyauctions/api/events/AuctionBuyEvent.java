@@ -26,11 +26,11 @@ public class AuctionBuyEvent extends Event {
 	 * @param item
 	 * @param price
 	 */
-	public AuctionBuyEvent(Player buyer, ItemStack item, long price, String sellerName) {
-		this.player = buyer;
+	public AuctionBuyEvent(Player player, ItemStack item, long price, String sellerName) {
+		this.player = player;
+		this.seller = sellerName;
 		this.item = item;
 		this.price = price;
-		this.seller = sellerName;
 	}
 	
 	public HandlerList getHandlers() {

@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 public class AuctionWinBidEvent extends Event {
 	
 	private Player player;
+	private String seller;
 	private long bid;
 	private ItemStack item;
-	private String seller;
 	private static final HandlerList handlers = new HandlerList();
 	
 	/**
@@ -28,9 +28,9 @@ public class AuctionWinBidEvent extends Event {
 	 */
 	public AuctionWinBidEvent(Player player, ItemStack item, long bid, String sellerName) {
 		this.player = player;
+		this.seller = sellerName;
 		this.item = item;
 		this.bid = bid;
-		this.seller = sellerName;
 	}
 	
 	public HandlerList getHandlers() {
