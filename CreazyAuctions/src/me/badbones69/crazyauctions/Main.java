@@ -4,6 +4,7 @@ import me.badbones69.crazyauctions.api.*;
 import me.badbones69.crazyauctions.api.FileManager.Files;
 import me.badbones69.crazyauctions.api.events.AuctionListEvent;
 import me.badbones69.crazyauctions.controllers.GUI;
+import me.badbones69.crazyauctions.controllers.Metrics;
 import me.badbones69.crazyauctions.currency.Vault;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,7 +30,6 @@ public class Main extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
-		saveDefaultConfig();
 		fileManager.logInfo(true).setup(this);
 		crazyAuctions.loadCrazyAuctions();
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
@@ -40,6 +40,7 @@ public class Main extends JavaPlugin implements Listener {
 			saveDefaultConfig();
 		}
 		Messages.addMissingMessages();
+		new Metrics(this); //Starts up bStats
 	}
 	
 	@Override
@@ -147,6 +148,7 @@ public class Main extends JavaPlugin implements Listener {
 							if(!Methods.isInt(args[2])) {
 								HashMap<String, String> placeholders = new HashMap<>();
 								placeholders.put("%Arg%", args[2]);
+								placeholders.put("%arg%", args[2]);
 								player.sendMessage(Messages.NOT_A_NUMBER.getMessage(placeholders));
 								return true;
 							}
@@ -157,6 +159,7 @@ public class Main extends JavaPlugin implements Listener {
 						if(!Methods.isLong(args[1])) {
 							HashMap<String, String> placeholders = new HashMap<>();
 							placeholders.put("%Arg%", args[1]);
+							placeholders.put("%arg%", args[1]);
 							player.sendMessage(Messages.NOT_A_NUMBER.getMessage(placeholders));
 							return true;
 						}
@@ -285,6 +288,7 @@ public class Main extends JavaPlugin implements Listener {
 						Bukkit.getPluginManager().callEvent(new AuctionListEvent(player, type, I, price));
 						HashMap<String, String> placeholders = new HashMap<>();
 						placeholders.put("%Price%", price + "");
+						placeholders.put("%price%", price + "");
 						player.sendMessage(Messages.ADDED_ITEM_TO_AUCTION.getMessage(placeholders));
 						if(item.getAmount() <= 1 || (item.getAmount() - amount) <= 0) {
 							Methods.setItemInHand(player, new ItemStack(Material.AIR));

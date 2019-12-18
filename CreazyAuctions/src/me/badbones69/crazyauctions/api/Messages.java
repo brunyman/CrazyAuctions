@@ -12,12 +12,12 @@ public enum Messages {
 	
 	PLAYERS_ONLY("Players-Only", "&cOnly players can use this command."),
 	RELOAD("Reload", "&7You have just reloaded the Crazy Auctions Files."),
-	NEED_MORE_MONEY("Need-More-Money", "&cYou are in need of &a$%Money_Needed%&c."),
+	NEED_MORE_MONEY("Need-More-Money", "&cYou are in need of &a$%money_needed%&c."),
 	INVENTORY_FULL("Inventory-Full", "&cYour inventory is too full. Please open up some space to buy that."),
 	NO_PERMISSION("No-Permission", "&cYou do not have permission to use that command!"),
 	NOT_ONLINE("Not-Online", "&cThat player is not online at this time."),
 	DOSENT_HAVE_ITEM_IN_HAND("Doesnt-Have-Item-In-Hand", "&cYou must have an item in your hand."),
-	NOT_A_NUMBER("Not-A-Number", "&c%Arg% is not a number."),
+	NOT_A_NUMBER("Not-A-Number", "&c%arg% is not a number."),
 	GOT_ITEM_BACK("Got-Item-Back", "&7Your item has been returned."),
 	CANCELLED_ITEM("Cancelled-Item", "&7You have cancelled an item on the auction list, return your items with /ah expired."),
 	ITEM_HAS_EXPIRED("Item-Has-Expired", "&7An item you have in the Crazy Auctions has just expired."),
@@ -34,11 +34,11 @@ public enum Messages {
 	SELL_PRICE_TO_HIGH("Sell-Price-To-High", "&cYour sell price is to high the maximum is &a$1000000&c."),
 	BID_PRICE_TO_LOW("Bid-Price-To-Low", "&cYour starting bid price is to low the minimum is &a$100&c."),
 	BID_PRICE_TO_HIGH("Bid-Price-To-High", "&cYour starting bid price is to high the maximum is &a$1000000&c."),
-	BOUGHT_ITEM("Bought-Item", "&7You have just bought a item for &a$%Price%&7."),
-	WIN_BIDDING("Win-Bidding", "&7You have just won a bid for &a$%Price%&7. Do /Ah Collect to collect your winnings."),
-	PLAYER_BOUGHT_ITEM("Player-Bought-Item", "&7%Player% has bought your item for &a$%Price%."),
-	SOMEONE_WON_PLAYERS_BID("Someone-Won-Players-Bid", "&7%Player% has won your item you from a bid for &a$%Price%."),
-	ADDED_ITEM_TO_AUCTION("Added-Item-To-Auction", "&7You have just added a item to the crazy auctions for &a$%Price%&7."),
+	BOUGHT_ITEM("Bought-Item", "&7You have just bought a item for &a$%price%&7."),
+	WIN_BIDDING("Win-Bidding", "&7You have just won a bid for &a$%price%&7. Do /Ah Collect to collect your winnings."),
+	PLAYER_BOUGHT_ITEM("Player-Bought-Item", "&7%player% has bought your item for &a$%price%."),
+	SOMEONE_WON_PLAYERS_BID("Someone-Won-Players-Bid", "&7%player% has won your item you from a bid for &a$%price%."),
+	ADDED_ITEM_TO_AUCTION("Added-Item-To-Auction", "&7You have just added a item to the crazy auctions for &a$%price%&7."),
 	BID_MESSAGE("Bid-Msg", "&7You have just bid &a$%Bid% &7on that item."),
 	SELLING_DISABLED("Selling-Disabled", "&cThe selling option is disabled."),
 	BIDDING_DISABLED("Bidding-Disabled", "&cThe bidding option is disabled."),
@@ -54,10 +54,10 @@ public enum Messages {
 	"&9/Ah Listed - &eView and manage the items you are selling.",
 	"&9/Ah Help - &eView this help menu."));
 	
+	private static FileManager fileManager = FileManager.getInstance();
 	private String path;
 	private String defaultMessage;
 	private List<String> defaultListMessage;
-	private static FileManager fileManager = FileManager.getInstance();
 	
 	private Messages(String path, String defaultMessage) {
 		this.path = path;
@@ -67,6 +67,43 @@ public enum Messages {
 	private Messages(String path, List<String> defaultListMessage) {
 		this.path = path;
 		this.defaultListMessage = defaultListMessage;
+	}
+	
+	public static String convertList(List<String> list) {
+		String message = "";
+		for(String m : list) {
+			message += Methods.color(m) + "\n";
+		}
+		return message;
+	}
+	
+	public static String convertList(List<String> list, HashMap<String, String> placeholders) {
+		String message = "";
+		for(String m : list) {
+			message += Methods.color(m) + "\n";
+		}
+		for(String ph : placeholders.keySet()) {
+			message = Methods.color(message.replaceAll(ph, placeholders.get(ph))).replaceAll(ph, placeholders.get(ph).toLowerCase());
+		}
+		return message;
+	}
+	
+	public static void addMissingMessages() {
+		FileConfiguration messages = Files.MESSAGES.getFile();
+		boolean saveFile = false;
+		for(Messages message : values()) {
+			if(!messages.contains("Messages." + message.getPath())) {
+				saveFile = true;
+				if(message.getDefaultMessage() != null) {
+					messages.set("Messages." + message.getPath(), message.getDefaultMessage());
+				}else {
+					messages.set("Messages." + message.getPath(), message.getDefaultListMessage());
+				}
+			}
+		}
+		if(saveFile) {
+			Files.MESSAGES.saveFile();
+		}
 	}
 	
 	public String getMessage() {
@@ -145,43 +182,6 @@ public enum Messages {
 			}
 		}
 		return message;
-	}
-	
-	public static String convertList(List<String> list) {
-		String message = "";
-		for(String m : list) {
-			message += Methods.color(m) + "\n";
-		}
-		return message;
-	}
-	
-	public static String convertList(List<String> list, HashMap<String, String> placeholders) {
-		String message = "";
-		for(String m : list) {
-			message += Methods.color(m) + "\n";
-		}
-		for(String ph : placeholders.keySet()) {
-			message = Methods.color(message.replaceAll(ph, placeholders.get(ph))).replaceAll(ph, placeholders.get(ph).toLowerCase());
-		}
-		return message;
-	}
-	
-	public static void addMissingMessages() {
-		FileConfiguration messages = Files.MESSAGES.getFile();
-		Boolean saveFile = false;
-		for(Messages message : values()) {
-			if(!messages.contains("Messages." + message.getPath())) {
-				saveFile = true;
-				if(message.getDefaultMessage() != null) {
-					messages.set("Messages." + message.getPath(), message.getDefaultMessage());
-				}else {
-					messages.set("Messages." + message.getPath(), message.getDefaultListMessage());
-				}
-			}
-		}
-		if(saveFile) {
-			Files.MESSAGES.saveFile();
-		}
 	}
 	
 	private Boolean exists() {
