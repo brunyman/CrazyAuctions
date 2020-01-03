@@ -30,6 +30,7 @@ public class AuctionWinBidEvent extends Event {
 		this.player = player;
 		this.item = item;
 		this.bid = bid;
+		this.seller = sellerName;
 	}
 	
 	public static HandlerList getHandlerList() {

@@ -30,6 +30,7 @@ public class AuctionBuyEvent extends Event {
 		this.player = player;
 		this.item = item;
 		this.price = price;
+		this.seller = sellerName;
 	}
 	
 	public static HandlerList getHandlerList() {
